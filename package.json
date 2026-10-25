@@ -1,0 +1,1 @@
+{"name":"caes-cia-caji","version":"1.0.0","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","check":"node --check dist/app.js && node --check dist/analytics-config.js && node --check scripts/build.mjs"}}
