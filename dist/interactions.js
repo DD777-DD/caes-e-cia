@@ -3,6 +3,8 @@
   'use strict';
   const gsap = window.gsap;
   if (!gsap) return;
+  const ScrollTrigger = window.ScrollTrigger;
+  if (ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
 
   const media = gsap.matchMedia();
   media.add('(prefers-reduced-motion: no-preference)', () => {
@@ -85,36 +87,8 @@
     }
 
     const cards = [...document.querySelectorAll('.service, .address-card')];
-    cards.forEach((card, index) => {
-      const illustration = card.querySelector('.service-illustration, .big-pin');
+    cards.forEach(card => {
       const arrow = card.querySelector('.service-link .icon, .address-card-bottom a .icon');
-      const direction = index % 2 ? 1 : -1;
-
-      // Cada cartão flutua em um ritmo diferente enquanto passa pela tela.
-      const cardMotion = gsap.timeline({ repeat: -1, yoyo: true, delay: index * .3 })
-        .fromTo(card, {
-          y: direction * -6,
-          rotationZ: direction * -.2
-        }, {
-          y: direction * 6,
-          rotationZ: direction * .2,
-          duration: 3.5 + index * .45,
-          ease: 'sine.inOut'
-        });
-      ambient(card, cardMotion, '14%');
-
-      if (illustration) {
-        const iconMotion = gsap.timeline({ repeat: -1, yoyo: true, delay: .35 + index * .25 })
-          .to(illustration, {
-            y: -5,
-            rotation: direction * 2.2,
-            scale: 1.025,
-            duration: 2.65 + index * .3,
-            ease: 'sine.inOut'
-          });
-        ambient(card, iconMotion, '14%');
-      }
-
       const rest = () => {
         card.classList.remove('is-interacting');
         if (arrow) tween(arrow, { x: 0, scale: 1, duration: .35, overwrite: 'auto' });
@@ -149,25 +123,108 @@
         .to('.spark-one', { y: -7, scale: 1.14, rotation: 14, duration: 2.1, ease: 'sine.inOut' }, 0)
         .to('.spark-two', { y: 5, scale: .9, rotation: -12, duration: 2.5, ease: 'sine.inOut' }, 0), '14%');
     }
-    const locationArt = document.querySelector('.location-art');
-    if (locationArt) {
-      ambient(locationArt, gsap.timeline({ repeat: -1, yoyo: true })
-        .to('.pin-rings', { scale: 1.045, opacity: .72, duration: 3.2, ease: 'sine.inOut' }, 0)
-        .to('.map-paw', { y: -6, rotation: 31, duration: 3, ease: 'sine.inOut' }, 0), '14%');
-    }
+    // Revelação cinematográfica: os cartões entram uma única vez, no ritmo da rolagem.
+    if (ScrollTrigger) {
+      const compact = window.matchMedia('(max-width: 850px)').matches;
+      const prepareCard = card => {
+        const children = [...card.children];
+        gsap.set(card, {
+          opacity: 0,
+          y: compact ? 58 : 82,
+          scale: compact ? .955 : .925,
+          rotationX: compact ? 5 : 9,
+          transformPerspective: 1200,
+          filter: 'blur(9px)'
+        });
+        gsap.set(children, { opacity: 0, y: compact ? 14 : 22 });
+        return children;
+      };
+      const revealCard = (timeline, card, position = 0) => {
+        const children = prepareCard(card);
+        timeline.to(card, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotationX: 0,
+          filter: 'blur(0px)',
+          duration: compact ? .92 : 1.08,
+          ease: 'power4.out',
+          clearProps: 'transform,filter,opacity'
+        }, position).to(children, {
+          opacity: 1,
+          y: 0,
+          duration: .68,
+          stagger: .055,
+          ease: 'power3.out',
+          clearProps: 'transform,opacity'
+        }, position + .16);
+      };
+      const connectTrigger = (trigger, timeline, start = 'top 86%') => {
+        remember(timeline.pause());
+        const instance = ScrollTrigger.create({
+          trigger,
+          start,
+          once: true,
+          onEnter: () => timeline.play()
+        });
+        cleanups.push(() => instance.kill());
+      };
 
-    // Entrada suave durante a rolagem sem esconder o conteúdo previamente.
-    if ('IntersectionObserver' in window) {
+      const serviceCards = [...document.querySelectorAll('.service')];
+      if (compact) {
+        serviceCards.forEach(card => {
+          const timeline = gsap.timeline();
+          revealCard(timeline, card);
+          connectTrigger(card, timeline, 'top 88%');
+        });
+      } else if (serviceCards.length) {
+        const timeline = gsap.timeline();
+        serviceCards.forEach((card, index) => revealCard(timeline, card, index * .16));
+        connectTrigger(document.querySelector('.services-grid'), timeline, 'top 82%');
+      }
+
+      const addressCard = document.querySelector('.address-card');
+      if (addressCard) {
+        const timeline = gsap.timeline();
+        revealCard(timeline, addressCard);
+        connectTrigger(addressCard, timeline, 'top 86%');
+      }
+
+      // O restante da página segue a mesma linguagem de entrada, em escala menor.
+      document.querySelectorAll('.about-grid > div, .section-top, .relationship-grid > div:last-child, .location-copy, .final-section .wrap').forEach(group => {
+        const children = [...group.children];
+        gsap.set(children, { opacity: 0, y: 34, filter: 'blur(5px)' });
+        const timeline = gsap.timeline().to(children, {
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: .9,
+          stagger: .08,
+          ease: 'power4.out',
+          clearProps: 'transform,filter,opacity'
+        });
+        connectTrigger(group, timeline, 'top 87%');
+      });
+
+      const talk = document.querySelector('.talk-art');
+      if (talk) {
+        gsap.set(talk, { opacity: 0, y: 54, scale: .94, rotation: -2, filter: 'blur(7px)' });
+        const timeline = gsap.timeline().to(talk, {
+          opacity: 1, y: 0, scale: 1, rotation: 0, filter: 'blur(0px)',
+          duration: 1.05, ease: 'power4.out', clearProps: 'transform,filter,opacity'
+        });
+        connectTrigger(talk, timeline, 'top 88%');
+      }
+      cleanups.push(() => ScrollTrigger.getAll().forEach(instance => instance.kill()));
+    } else if ('IntersectionObserver' in window) {
+      // Fallback suave caso o complemento de rolagem não carregue.
       const reveal = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (!entry.isIntersecting) return;
           reveal.unobserve(entry.target);
-          const isCard = entry.target.matches('.service, .address-card');
-          const from = isCard ? { opacity: .55 } : { y: 22, opacity: .55 };
-          const to = isCard
-            ? { opacity: 1, duration: .75, ease: 'power3.out', clearProps: 'opacity' }
-            : { y: 0, opacity: 1, duration: .75, ease: 'power3.out', clearProps: 'transform,opacity' };
-          remember(gsap.fromTo(entry.target, from, to));
+          remember(gsap.fromTo(entry.target, { y: 48, opacity: 0 }, {
+            y: 0, opacity: 1, duration: .95, ease: 'power4.out', clearProps: 'transform,opacity'
+          }));
         });
       }, { threshold: .12 });
       document.querySelectorAll('.service, .address-card, .about-copy, .relationship-grid > div:last-child').forEach(element => reveal.observe(element));
@@ -187,7 +244,7 @@
       cleanups.forEach(cleanup => cleanup());
       animations.forEach(animation => animation.revert());
       document.querySelectorAll('.is-interacting').forEach(card => card.classList.remove('is-interacting'));
-      gsap.set('.logo-stage, .hero-logo, .art-orbit, .service, .address-card, .art-caption, .paw-one, .paw-two, .service-illustration, .big-pin, .talk-bubble, .talk-spark, .pin-rings, .map-paw, .service-link .icon, .address-card-bottom a .icon, .button, .whatsapp-float', { clearProps: 'transform,opacity' });
+      gsap.set('.logo-stage, .hero-logo, .art-orbit, .service, .service > *, .address-card, .address-card > *, .art-caption, .paw-one, .paw-two, .service-illustration, .big-pin, .talk-art, .talk-bubble, .talk-spark, .pin-rings, .map-paw, .service-link .icon, .address-card-bottom a .icon, .button, .whatsapp-float, .about-grid > div > *, .section-top > *, .relationship-grid > div:last-child > *, .location-copy > *, .final-section .wrap > *', { clearProps: 'transform,filter,opacity,visibility' });
     };
   });
 })();
