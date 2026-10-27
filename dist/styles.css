@@ -26,4 +26,5 @@
 .service-link,.address-card-bottom a{position:static}
 .whatsapp-float{background:#06684d;box-shadow:0 5px 24px #004d3630}
 .whatsapp-float:hover{background:#04533d}
+.hero-logo,.art-orbit,.decor-paw,.art-caption,.service,.address-card,.service-illustration,.big-pin,.talk-bubble,.talk-spark,.pin-rings,.map-paw{will-change:transform}
 @media(prefers-reduced-motion:reduce){.service:before,.address-card:before{display:none}.logo-stage:hover{outline:2px solid #dfc49c;outline-offset:5px}}

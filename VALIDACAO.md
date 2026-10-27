@@ -29,5 +29,6 @@ Projeto preparado para Vercel. Não há autenticação da Vercel disponível na 
 - Todos os links de WhatsApp mantêm o número 5571981866867; logo clicável e botão flutuante com maior destaque.
 - Layouts de 320, 390 e 768 px novamente verificados em iframes: áreas úteis de 305, 375 e 753 px, todas sem overflow horizontal.
 - Sintaxe e testes de mensuração aprovados; verificações de ausência de GSAP e preferência por movimento reduzido aprovadas em ambiente simulado.
+- 27/10/2026: movimento ambiente autônomo ampliado para a marca, os três cartões de serviços, o cartão de localização, os balões de conversa e elementos decorativos do mapa. As animações são ativadas por visibilidade durante a rolagem, pausam fora da tela/aba e não dependem de clique.
 - Nenhum erro do código da aplicação observado no console.
 - O site já estava público antes desta atualização; o acesso público será preservado.
