@@ -21,3 +21,13 @@ Não foi realizado teste em iPhone/Android físico, auditoria completa de acessi
 ## Publicação
 
 Projeto preparado para Vercel. Não há autenticação da Vercel disponível na execução; nenhuma publicação nessa conta foi realizada. A versão hospedada por Sites começa como prévia de acesso restrito ao proprietário. Ela não deve ser usada em campanhas até haver uma URL de acesso público aprovada. Endereço, horários e serviços podem ser mantidos no HTML; ao mudar o domínio, usar SITE_URL no build para atualizar SEO.
+
+## Atualização de 27/10/2026 — GSAP e WhatsApp
+
+- GSAP 3.13.0 hospedado com o próprio site. Movimento da legenda da logo verificado no navegador por variação do transform.
+- Clique no corpo do cartão de banho e tosa ativou o link correto de WhatsApp; o estado de foco e a transformação de profundidade foram verificados. Não houve envio de mensagem. O lançamento do aplicativo externo não foi verificado neste ambiente.
+- Todos os links de WhatsApp mantêm o número 5571981866867; logo clicável e botão flutuante com maior destaque.
+- Layouts de 320, 390 e 768 px novamente verificados em iframes: áreas úteis de 305, 375 e 753 px, todas sem overflow horizontal.
+- Sintaxe e testes de mensuração aprovados; verificações de ausência de GSAP e preferência por movimento reduzido aprovadas em ambiente simulado.
+- Nenhum erro do código da aplicação observado no console.
+- O site já estava público antes desta atualização; o acesso público será preservado.

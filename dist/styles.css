@@ -10,3 +10,20 @@
 @media(max-width:360px){.header .nav{display:none}.header-cta{margin-left:auto}.hero h1{font-size:40px}.hero .actions{gap:10px}.hero .button{font-size:10px;padding-inline:11px}.hero .text-link{font-size:10px}.service{padding:23px}.service-link{font-size:11px}.pill{font-size:7px;letter-spacing:.5px}.talk-art{min-height:245px}.relationship .button,.location .button{font-size:11px;padding-inline:13px}.location .button .arrow{display:none}.final-section .button{font-size:11px}}
 @media(max-width:600px){.relationship-grid{grid-template-columns:minmax(0,1fr)}.talk-art{width:min(290px,100%)}.relationship .button{max-width:100%}}
 .big-pin{fill:none;stroke-width:1.5}
+/* Cartões e marca interativos. A área estendida pertence ao próprio link. */
+.logo-stage{display:block;text-decoration:none;transform-origin:center;cursor:pointer;backface-visibility:hidden}
+.logo-stage:focus-visible{outline:3px solid var(--orange);outline-offset:8px}
+.hero-art{perspective:1100px}.art-caption,.decor-paw{pointer-events:none}
+.service,.address-card{position:relative;isolation:isolate;transform-origin:center;transition:box-shadow .35s,border-color .35s;backface-visibility:hidden}
+.service:before,.address-card:before{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:radial-gradient(350px circle at var(--pointer-x,50%) var(--pointer-y,25%),#f5ce841c,transparent 65%);opacity:0;pointer-events:none;transition:opacity .35s}
+.featured:before{background:radial-gradient(350px circle at var(--pointer-x,50%) var(--pointer-y,25%),#ffffff16,transparent 65%)}
+.service.is-interacting,.service:focus-within,.address-card.is-interacting,.address-card:focus-within{box-shadow:0 20px 38px -18px #003f5936;border-color:#a8844c}
+.service.is-interacting:before,.service:focus-within:before,.address-card.is-interacting:before,.address-card:focus-within:before{opacity:1}
+.service-link:after,.address-card-bottom a:after{content:'';position:absolute;inset:0;z-index:2;border-radius:var(--radius);cursor:pointer}
+.service-link:focus-visible,.address-card-bottom a:focus-visible{outline:none}
+.service-link:focus-visible:after,.address-card-bottom a:focus-visible:after{outline:3px solid var(--orange);outline-offset:5px}
+.featured .service-link:focus-visible:after{outline-color:var(--gold)}
+.service-link,.address-card-bottom a{position:static}
+.whatsapp-float{background:#06684d;box-shadow:0 5px 24px #004d3630}
+.whatsapp-float:hover{background:#04533d}
+@media(prefers-reduced-motion:reduce){.service:before,.address-card:before{display:none}.logo-stage:hover{outline:2px solid #dfc49c;outline-offset:5px}}

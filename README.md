@@ -1,6 +1,6 @@
 # Cães & Cia — Unidade Caji
 
-Landing page institucional de relacionamento, mobile-first, HTML/CSS/JavaScript sem dependências. A logo original foi preservada e as cópias WebP foram apenas redimensionadas e comprimidas.
+Landing page institucional de relacionamento, mobile-first, HTML/CSS/JavaScript com GSAP 3.13.0 distribuído localmente, sem instalação de dependências para publicar. A logo original foi preservada e as cópias WebP foram apenas redimensionadas e comprimidas.
 
 ## Publicação na Vercel
 
@@ -23,3 +23,7 @@ A instalação de um Pixel pode criar cookies; revogar impede novas inicializaç
 ## Verificação
 
 `npm run check` valida a sintaxe. A estrutura sem build facilita migração e manutenção. Os testes de navegador e os resultados da execução ficam no relatório entregue com o projeto.
+
+## Interatividade — 27/10/2026
+
+`dist/interactions.js` adiciona movimentos à logo, efeito de profundidade com mouse, resposta ao toque e ao foco, entrada suave na rolagem e movimento nos ícones. Os cartões de serviço são clicáveis por inteiro via a área estendida de seus próprios links; a logo também abre o WhatsApp. O cartão de localização abre o mapa. Não há links aninhados nem necessidade de JavaScript para abrir os destinos. O movimento ambiente pausa fora da tela e em abas ocultas. `prefers-reduced-motion` evita a inicialização dos efeitos; os listeners e as animações são limpos caso a preferência mude. A biblioteca preserva seu cabeçalho de licença em `dist/assets/vendor/gsap-3.13.0.min.js`.
