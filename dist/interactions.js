@@ -159,14 +159,54 @@
           clearProps: 'transform,opacity'
         }, position + .16);
       };
+      const prepareCta = cta => {
+        gsap.set(cta, {
+          opacity: 0,
+          y: compact ? 38 : 52,
+          scale: compact ? .95 : .91,
+          rotationX: compact ? 5 : 9,
+          transformPerspective: 1000,
+          filter: 'blur(8px)'
+        });
+      };
+      const revealCta = (timeline, cta, position = 0) => {
+        prepareCta(cta);
+        timeline.to(cta, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotationX: 0,
+          filter: 'blur(0px)',
+          duration: compact ? .9 : 1.04,
+          ease: 'power4.out',
+          clearProps: 'transform,filter,opacity'
+        }, position);
+      };
       const connectTrigger = (trigger, timeline, start = 'top 86%') => {
         remember(timeline.pause());
+        const playOnceVisible = self => {
+          if (self.progress > 0 && timeline.progress() < 1 && timeline.paused()) timeline.play();
+        };
         const instance = ScrollTrigger.create({
           trigger,
           start,
-          once: true,
-          onEnter: () => timeline.play()
+          end: 'bottom 20%',
+          invalidateOnRefresh: true,
+          onEnter: () => timeline.progress() < 1 && timeline.play(),
+          onLeave: () => timeline.progress() < 1 && timeline.play(),
+          onUpdate: playOnceVisible
         });
+        let frame = 0;
+        const ensureFastScroll = () => {
+          cancelAnimationFrame(frame);
+          frame = requestAnimationFrame(() => {
+            if (trigger.getBoundingClientRect().top <= window.innerHeight * .9 && timeline.progress() < 1 && timeline.paused()) timeline.play();
+          });
+        };
+        on(window, 'scroll', ensureFastScroll, { passive: true });
+        on(window, 'resize', ensureFastScroll, { passive: true });
+        frame = requestAnimationFrame(ensureFastScroll);
+        cleanups.push(() => cancelAnimationFrame(frame));
         cleanups.push(() => instance.kill());
       };
 
@@ -190,19 +230,45 @@
         connectTrigger(addressCard, timeline, 'top 86%');
       }
 
+      // Os CTAs acima da dobra recebem a mesma entrada em profundidade dos cartões.
+      const heroActions = [...document.querySelectorAll('.hero .actions > a')];
+      if (heroActions.length) {
+        const timeline = gsap.timeline({ delay: .18 });
+        heroActions.forEach((cta, index) => revealCta(timeline, cta, index * .1));
+        remember(timeline);
+      }
+      const headerCta = document.querySelector('.header-cta');
+      if (headerCta) {
+        const timeline = gsap.timeline({ delay: .08 });
+        revealCta(timeline, headerCta);
+        remember(timeline);
+      }
+      const floatingCta = document.querySelector('.whatsapp-float');
+      if (floatingCta) {
+        const timeline = gsap.timeline({ delay: .62 });
+        revealCta(timeline, floatingCta);
+        remember(timeline);
+      }
+
       // O restante da página segue a mesma linguagem de entrada, em escala menor.
       document.querySelectorAll('.about-grid > div, .section-top, .relationship-grid > div:last-child, .location-copy, .final-section .wrap').forEach(group => {
         const children = [...group.children];
-        gsap.set(children, { opacity: 0, y: 34, filter: 'blur(5px)' });
-        const timeline = gsap.timeline().to(children, {
-          opacity: 1,
-          y: 0,
-          filter: 'blur(0px)',
-          duration: .9,
-          stagger: .08,
-          ease: 'power4.out',
-          clearProps: 'transform,filter,opacity'
-        });
+        const ctas = children.filter(child => child.matches('.button'));
+        const content = children.filter(child => !child.matches('.button'));
+        gsap.set(content, { opacity: 0, y: 34, filter: 'blur(5px)' });
+        const timeline = gsap.timeline();
+        if (content.length) {
+          timeline.to(content, {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: .9,
+            stagger: .08,
+            ease: 'power4.out',
+            clearProps: 'transform,filter,opacity'
+          });
+        }
+        ctas.forEach((cta, index) => revealCta(timeline, cta, .2 + index * .1));
         connectTrigger(group, timeline, 'top 87%');
       });
 

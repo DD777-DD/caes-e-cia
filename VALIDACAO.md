@@ -31,5 +31,6 @@ Projeto preparado para Vercel. Não há autenticação da Vercel disponível na 
 - Sintaxe e testes de mensuração aprovados; verificações de ausência de GSAP e preferência por movimento reduzido aprovadas em ambiente simulado.
 - 27/10/2026: movimento ambiente autônomo ampliado para a marca, os três cartões de serviços, o cartão de localização, os balões de conversa e elementos decorativos do mapa. As animações são ativadas por visibilidade durante a rolagem, pausam fora da tela/aba e não dependem de clique.
 - 27/10/2026: após análise da referência em vídeo, o movimento contínuo dos cartões foi removido. A nova direção usa GSAP ScrollTrigger para entradas únicas e progressivas: profundidade, desfoque, escala, deslocamento e revelação interna em camadas, com sequência no desktop e gatilho individual no mobile.
+- 27/10/2026: os CTAs principais foram separados das trilhas de texto e passaram a usar a mesma entrada em profundidade dos cartões. Foram incluídas as chamadas da primeira dobra, relacionamento, localização, fechamento e WhatsApp flutuante.
 - Nenhum erro do código da aplicação observado no console.
 - O site já estava público antes desta atualização; o acesso público será preservado.
